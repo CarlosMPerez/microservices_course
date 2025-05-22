@@ -20,12 +20,24 @@ namespace PlatformService.Controllers
             return Ok(platforms);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}", Name = "GetPlatformById")] // to be used by CreatedAtRoute below
         public ActionResult<PlatformReadDto> GetPlatformById(int id)
         {
             var platform = repository.GetPlatfomById(id);
             if (platform != null) return Ok(platform.ToReadDto());
             else return NotFound();
+        }
+
+        [HttpPost]
+        public ActionResult<PlatformReadDto> CreatePlatform(PlatformCreateDto newPlatform)
+        {
+            var model = newPlatform.ToModel();
+            repository.CreatePlatform(model);
+            repository.SaveChanges();
+
+            var readDto = model.ToReadDto();
+
+            return CreatedAtRoute(nameof(GetPlatformById), new { Id = readDto.Id }, readDto);
         }
 
     }
