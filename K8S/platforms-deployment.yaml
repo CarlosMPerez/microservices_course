@@ -1,0 +1,30 @@
+# This specifies the API version of the Kubernetes Deployment object you're using
+apiVersion: apps/v1
+
+# This tells Kubernetes you're defining a Deployment (used to manage a set of Pods)
+kind: Deployment
+
+# Metadata provides basic information like the name of this Deployment
+metadata:
+  name: platforms-deployment  # The name of the Deployment object
+
+spec:
+  # The number of pod replicas you want running at any given time
+  replicas: 1  # Run 1 instance (replica) of the pod
+
+  # This tells the Deployment how to identify the Pods it should manage
+  selector:
+    matchLabels:
+      app: platformservice  # This must match the labels defined in the pod template below
+
+  # The pod template: defines how the Pods managed by this Deployment should look
+  template:
+    metadata:
+      labels:
+        app: platformservice  # Labels used to identify Pods; must match the selector above
+
+    spec:
+      # This is the list of containers to run in each Pod
+      containers:
+        - name: platformservice  # A name you assign to this container (used for reference/logs/etc.)
+          image: carlosmperez/platformservice  # The Docker image to run from Docker Hub (or another registry)

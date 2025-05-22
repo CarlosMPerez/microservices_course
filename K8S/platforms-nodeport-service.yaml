@@ -1,0 +1,25 @@
+# This specifies the API version for defining core Kubernetes resources like Services
+apiVersion: v1
+
+# This tells Kubernetes you're defining a Service (used to expose Pods to the network)
+kind: Service
+
+# Metadata provides identifying information for the Service
+metadata:
+  name: platform-nodeport-service-service  # Name of the Service (used for referencing and DNS)
+
+spec:
+  # 'NodePort' exposes the Service on a static port on each node (useful for local access)
+  type: NodePort
+
+  # This selector tells the Service which Pods it should route traffic to
+  selector:
+    app: platformservice  # Must match the label on the pods (in the Deployment's template)
+
+  # The ports section maps external access to the internal Pod container ports
+  ports:
+    - name: platformservice       # A descriptive name for this port mapping
+      protocol: TCP               # Communication protocol (TCP is standard for HTTP APIs)
+      port: 8080                  # The port the Service exposes inside the cluster (cluster IP)
+      targetPort: 8080            # The container port on the Pod to send traffic to
+      # NodePort can be optionally specified (like 30080); otherwise, Kubernetes picks a random high port
